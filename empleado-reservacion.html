@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#b8361f">
+    <title>VERSALLES CHECK IN </title>
+    <!-- Icono de la pestaña del navegador (Favicon) -->
+    <link rel="icon" href="proyecto restaurante/items/logo.png" type="image/png">
+    <link rel="stylesheet" href="proyecto restaurante/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="proyecto restaurante/css/Estilo-login.css">
+</head>
+<body>
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(22, 16, 16, 0.98); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div class="card text-center shadow-lg" style="width: 22rem; border-radius: 15px; padding: 30px 20px; background-color: #ffffff;">
+            <div class="card-body" style="padding: 0;">
+                <img src="proyecto restaurante/items/logo.png" alt="Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 20px;">
+                <h3 class="card-title" style="color: #b8361f; font-weight: bold;">Acceso de Empleados</h3>
+                <form id="form-login-empleado" style="padding: 0; min-height: auto; margin-top: 20px;">
+                    <div style="text-align: left;">
+                        <label for="username" style="font-weight: bold; color: #333; margin-bottom: 5px;">Usuario</label>
+                        <input type="text" id="username" class="form-control" placeholder="Ej. jorge" required>
+                    </div>
+                    <div style="text-align: left; margin-top: 15px;">
+                        <label for="password" style="font-weight: bold; color: #333; margin-bottom: 5px;">Contraseña</label>
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn text-white" style="background-color: #b8361f; border-radius: 20px; padding: 10px 30px; width: 100%; margin-top: 25px;">Ingresar</button>
+                    <p id="login-error" style="color: red; font-size: 12px; margin-top: 15px; display: none; height: 15px;">Usuario o contraseña incorrectos.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (initially hidden) -->
+    <div id="main-app-content" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="proyecto restaurante/items/logo.png" alt="Logo Le goût de Versailles" class="logo-restaurante">
+                    Le goût de Versailles - Portal de Empleados
+                </a>
+                <span id="employee-welcome" class="navbar-text text-white fst-italic me-auto ms-4"></span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavEmpleado" aria-controls="navbarNavEmpleado" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNavEmpleado">
+                    <ul class="navbar-nav gap-3 mb-0">
+                        <li class="nav-item">
+                            <button id="btn-nav-checkin" class="btn text-white" style="background-color: #b8361f; border-radius: 20px; font-weight: bold; padding: 8px 20px;"><i class="fas fa-qrcode"></i> Check-in</button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="btn-nav-mesas" class="btn text-white" style="background-color: #161010; border: 1px solid #b8361f; border-radius: 20px; font-weight: bold; padding: 8px 20px;"><i class="fas fa-th"></i> Mapa de Mesas</button>
+                        </li>
+                        <li class="nav-item">
+                            <button id="btn-cerrar-dia" class="btn text-white" style="background-color: #f39c12; border-radius: 20px; font-weight: bold; padding: 8px 20px; border: none;"><i class="fas fa-file-invoice-dollar"></i> Cerrar Día</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CONTENEDOR 1: CHECK-IN -->
+        <div class="registro-container" id="checkin-container" style="width: 500px; max-width: 95%; height: auto; min-height: 500px; margin-top: 120px; padding: 0;">
+            <form action="#" id="form-checkin" style="width: 100%; height: 100%; padding: 40px;">
+                <i class="fas fa-concierge-bell" style="font-size: 3.5rem; color: #b8361f; margin-bottom: 15px;"></i>
+                <h1 style="margin-top: 0;">Check-in</h1>
+                <span style="margin-top: 10px;">Ingrese el token proporcionado por el cliente</span>
+                
+                <input type="text" id="token-input" placeholder="Ej. 12345" required maxlength="5" 
+                       style="text-align: center; font-size: 28px; letter-spacing: 8px; font-weight: bold; margin-top: 30px; padding: 15px;" />
+                
+                <button type="submit" id="btn-validar" style="margin-top: 30px;">Validar Token</button>
+            </form>
+        </div>
+
+        <!-- CONTENEDOR 2: MAPA DE MESAS -->
+        <div class="registro-container" id="mesas-container" style="width: 1200px; max-width: 98%; min-height: 650px; margin-top: 120px; padding: 40px 50px; display: none; overflow-y: auto;">
+            <h2 style="color: #b8361f; margin-bottom: 10px; text-align: center; display: block;">Mapa de Mesas</h2>
+            <p id="instruccion-mesa" style="font-weight: bold; color: #555; margin-bottom: 30px; font-size: 15px; text-align: center;">Ingrese un token válido para asignar mesa.</p>
+            <div id="grid-mesas" class="mesas-grid"></div>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Resultado -->
+    <div id="result-card" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="card text-center shadow-lg" style="width: 25rem; border-radius: 15px; padding: 20px; background-color: #ffffff;">
+            <div class="card-body" id="result-body">
+                <!-- El contenido será inyectado por JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- New Menu Modal -->
+    <div id="menu-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="card text-center shadow-lg" style="width: 80%; max-width: 900px; border-radius: 15px; padding: 20px; background-color: #ffffff; max-height: 90vh; overflow-y: auto;">
+            <div class="card-body">
+                <h3 class="card-title" style="color: #b8361f; font-weight: bold; margin-bottom: 20px;">Menú de la Mesa <span id="mesa-menu-numero"></span></h3>
+                
+                <div class="menu-sections" style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px;">
+                    <!-- Platillos -->
+                    <div class="menu-section" style="flex: 1; min-width: 280px; background-color: #f9f9f9; border-radius: 10px; padding: 15px; text-align: left;">
+                        <h4 style="color: #161010; margin-bottom: 15px;">Platillos</h4>
+                        <ul id="menu-platillos" style="list-style: none; padding: 0;">
+                            <!-- Items will be injected here -->
+                        </ul>
+                    </div>
+
+                    <!-- Bebidas -->
+                    <div class="menu-section" style="flex: 1; min-width: 280px; background-color: #f9f9f9; border-radius: 10px; padding: 15px; text-align: left;">
+                        <h4 style="color: #161010; margin-bottom: 15px;">Bebidas</h4>
+                        <ul id="menu-bebidas" style="list-style: none; padding: 0;">
+                            <!-- Items will be injected here -->
+                        </ul>
+                    </div>
+
+                    <!-- Guarniciones (Example, can be expanded) -->
+                    <div class="menu-section" style="flex: 1; min-width: 280px; background-color: #f9f9f9; border-radius: 10px; padding: 15px; text-align: left;">
+                        <h4 style="color: #161010; margin-bottom: 15px;">Guarniciones</h4>
+                        <ul id="menu-guarniciones" style="list-style: none; padding: 0;">
+                            <!-- Items will be injected here -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <hr style="margin-top: 30px; margin-bottom: 20px; border-color: #eee;">
+
+                <!-- Sección de Orden Actual -->
+                <div class="current-order-section" style="background-color: #f1ebeb; border-radius: 10px; padding: 15px; text-align: left; margin-top: 20px;">
+                    <h4 style="color: #161010; margin-bottom: 15px; text-align: center;">Orden Actual</h4>
+                    <ul id="selected-items-list" style="list-style: none; padding: 0; margin-bottom: 15px;">
+                        <!-- Selected items will be injected here -->
+                    </ul>
+                    <p id="order-total" style="font-weight: bold; font-size: 1.2rem; text-align: right; color: #b8361f;">Total: $0.00</p>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button id="cerrar-cuenta-btn" class="btn text-white" style="background-color: #b8361f; border-radius: 20px; padding: 10px 30px;">Cerrar Cuenta</button>
+                    <button id="pagado-btn" class="btn text-white" style="background-color: #28a745; border-radius: 20px; padding: 10px 30px; display: none;">Pagado y Liberar Mesa</button>
+                </div>
+
+                <!-- Botón de Cerrar Menú (original) -->
+                <button id="close-menu-modal" class="btn text-white mt-4" style="background-color: #b8361f; border-radius: 20px; padding: 10px 30px;">Cerrar Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="proyecto restaurante/js/bootstrap.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="proyecto restaurante/js/empleadocheck.js"></script>
+</body>
+</html> 
